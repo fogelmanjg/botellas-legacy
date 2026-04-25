@@ -1,0 +1,124 @@
+.juegos {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.btn-nuevo {
+  padding: 8px 18px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  &:hover { background: #2980b9; }
+}
+
+.form-card {
+  background: #1e1e2e;
+  border: 1px solid #2a2a3e;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  h3 { font-size: 15px; color: #aaa; }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: #aaa;
+
+    input {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #12121e;
+      color: #eee;
+      font-size: 14px;
+    }
+  }
+}
+
+.form-acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-guardar {
+  padding: 8px 20px;
+  background: #2ecc71;
+  color: #111;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  &:hover:not(:disabled) { background: #27ae60; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn-cancelar {
+  padding: 8px 16px;
+  background: #333;
+  color: #aaa;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  &:hover { background: #444; }
+}
+
+.msg { color: #aaa; }
+.error { color: #e74c3c; font-size: 13px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid #333;
+    color: #aaa;
+    font-size: 13px;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #2a2a3e;
+    font-size: 14px;
+  }
+
+  tr:hover td { background: #1e1e2e; }
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 0;
+    color: #3498db;
+    &:hover { text-decoration: underline; }
+
+    &.btn-eliminar { color: #e74c3c; }
+  }
+}

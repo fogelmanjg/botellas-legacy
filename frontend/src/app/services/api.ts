@@ -16,6 +16,14 @@ export class ApiService {
     return this.http.post<Juego>(`${BASE}/juegos`, { nombre, editor });
   }
 
+  actualizarJuego(id: number, nombre: string, editor?: string) {
+    return this.http.put<Juego>(`${BASE}/juegos/${id}`, { nombre, editor });
+  }
+
+  eliminarJuego(id: number) {
+    return this.http.delete(`${BASE}/juegos/${id}`);
+  }
+
   getNiveles(idjuego?: number) {
     const params = idjuego ? `?idjuego=${idjuego}` : '';
     return this.http.get<NivelResumen[]>(`${BASE}/niveles${params}`);

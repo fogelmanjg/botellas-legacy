@@ -1,11 +1,13 @@
 import "reflect-metadata";
 import express from "express";
+import cors from "cors";
 import { AppDataSource } from "./data-source";
 import juegosRouter from "./routes/juegos";
 import bloqueosRouter from "./routes/bloqueos";
 import nivelesRouter from "./routes/niveles";
 
 const app = express();
+app.use(cors({ origin: 'http://localhost:4200' }));
 app.use(express.json());
 
 AppDataSource.initialize()

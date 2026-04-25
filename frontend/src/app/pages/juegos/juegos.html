@@ -1,0 +1,59 @@
+<div class="juegos">
+  <div class="header">
+    <h2>Juegos</h2>
+    <button class="btn-nuevo" (click)="abrirAlta()">+ Nuevo juego</button>
+  </div>
+
+  <!-- Formulario alta / edición -->
+  @if (editando !== undefined || formNombre || formEditor) {
+    <div class="form-card">
+      <h3>{{ editando ? 'Editar juego' : 'Nuevo juego' }}</h3>
+      <label>
+        Nombre *
+        <input [(ngModel)]="formNombre" placeholder="Water Sort Puzzle" maxlength="200" />
+      </label>
+      <label>
+        Editor
+        <input [(ngModel)]="formEditor" placeholder="IEC, Voodoo…" maxlength="200" />
+      </label>
+      @if (error) { <p class="error">{{ error }}</p> }
+      <div class="form-acciones">
+        <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+          {{ guardando ? 'Guardando…' : 'Guardar' }}
+        </button>
+        <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+      </div>
+    </div>
+  }
+
+  <!-- Listado -->
+  @if (cargando()) {
+    <p class="msg">Cargando…</p>
+  } @else if (juegos().length === 0) {
+    <p class="msg">No hay juegos todavía.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Editor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (j of juegos(); track j.idjuego) {
+          <tr>
+            <td>{{ j.idjuego }}</td>
+            <td>{{ j.nombre }}</td>
+            <td>{{ j.editor ?? '—' }}</td>
+            <td class="acciones">
+              <button (click)="abrirEdicion(j)">Editar</button>
+              <button class="btn-eliminar" (click)="eliminar(j)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
