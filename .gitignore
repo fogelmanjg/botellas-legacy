@@ -22,3 +22,7 @@ Thumbs.db
 
 # Postgres data (if any)
 pgdata/
+
+# Solver runtime logs
+solver.log
+solver_err.log
