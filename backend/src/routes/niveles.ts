@@ -158,6 +158,8 @@ router.get("/:id", async (req: Request, res: Response) => {
 router.post("/", async (req: Request, res: Response) => {
   const { idjuego, numeronivel, capacidadextra = 0, grupos: gruposInput } = req.body;
 
+  if (idjuego == null)
+    return res.status(400).json({ error: "idjuego es requerido" });
   if (typeof numeronivel !== "number")
     return res.status(400).json({ error: "numeronivel debe ser un número" });
   if (typeof capacidadextra !== "number" || capacidadextra < 0)
@@ -167,11 +169,8 @@ router.post("/", async (req: Request, res: Response) => {
   if (err) return res.status(400).json({ error: err });
 
   await AppDataSource.transaction(async (em) => {
-    let juego: Juego | null = null;
-    if (idjuego != null) {
-      juego = await em.getRepository(Juego).findOneBy({ idjuego: Number(idjuego) });
-      if (!juego) throw Object.assign(new Error("Juego no encontrado"), { status: 404 });
-    }
+    const juego = await em.getRepository(Juego).findOneBy({ idjuego: Number(idjuego) });
+    if (!juego) throw Object.assign(new Error("Juego no encontrado"), { status: 404 });
 
     const nivel = em.getRepository(Nivel).create({ juego, numeronivel, capacidadextra });
     await em.getRepository(Nivel).save(nivel);
@@ -207,13 +206,11 @@ router.put("/:id", async (req: Request, res: Response) => {
     if (typeof req.body.capacidadextra === "number") nivel.capacidadextra = req.body.capacidadextra;
 
     if ("idjuego" in req.body) {
-      if (req.body.idjuego == null) {
-        nivel.juego = null;
-      } else {
-        const juego = await em.getRepository(Juego).findOneBy({ idjuego: Number(req.body.idjuego) });
-        if (!juego) throw Object.assign(new Error("Juego no encontrado"), { status: 404 });
-        nivel.juego = juego;
-      }
+      if (req.body.idjuego == null)
+        throw Object.assign(new Error("idjuego no puede ser nulo"), { status: 400 });
+      const juego = await em.getRepository(Juego).findOneBy({ idjuego: Number(req.body.idjuego) });
+      if (!juego) throw Object.assign(new Error("Juego no encontrado"), { status: 404 });
+      nivel.juego = juego;
     }
 
     await em.getRepository(Nivel).save(nivel);

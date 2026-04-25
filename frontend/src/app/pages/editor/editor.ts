@@ -125,7 +125,7 @@ export class Editor implements OnInit {
   // ── Carga de nivel existente ─────────────────────────────
 
   cargarNivel(nivel: Nivel) {
-    this.idjuegoSeleccionado = nivel.juego?.idjuego ?? null;
+    this.idjuegoSeleccionado = nivel.juego.idjuego;
     this.numeronivel = nivel.numeronivel;
     this.capacidadextra = nivel.capacidadextra;
 
@@ -249,6 +249,11 @@ export class Editor implements OnInit {
   guardar() {
     this.error = '';
 
+    if (this.idjuegoSeleccionado == null) {
+      this.error = 'Debe seleccionar un juego.';
+      return;
+    }
+
     for (const g of this.grupos()) {
       if (g.botellas.length === 0) {
         this.error = `Grupo ${g.numerogrupo} no tiene botellas.`;
@@ -267,7 +272,7 @@ export class Editor implements OnInit {
     }
 
     const payload = {
-      idjuego: this.idjuegoSeleccionado ?? undefined,
+      idjuego: this.idjuegoSeleccionado,
       numeronivel: this.numeronivel,
       capacidadextra: this.capacidadextra,
       grupos: this.grupos().map(g => ({

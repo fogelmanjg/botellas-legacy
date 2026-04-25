@@ -15,6 +15,7 @@ import { AddAgrupaBloqueoPropiedades1745546400000 } from "./migrations/174554640
 import { RefactorBloqueoFields1745550000000 } from "./migrations/1745550000000-RefactorBloqueoFields";
 import { AddTipoBloqueo1745553600000 } from "./migrations/1745553600000-AddTipoBloqueo";
 import { UniqueNivelPorJuego1745557200000 } from "./migrations/1745557200000-UniqueNivelPorJuego";
+import { NivelIdjuegoNotNull1745560800000 } from "./migrations/1745560800000-NivelIdjuegoNotNull";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -34,5 +35,6 @@ export const AppDataSource = new DataSource({
     RefactorBloqueoFields1745550000000,
     AddTipoBloqueo1745553600000,
     UniqueNivelPorJuego1745557200000,
+    NivelIdjuegoNotNull1745560800000,
   ],
 });

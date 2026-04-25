@@ -27,21 +27,20 @@ CREATE SEQUENCE public.juego_idjuego_seq AS integer OWNED BY public.juego.idjueg
 
 CREATE TABLE public.nivel (
     idnivel         integer NOT NULL DEFAULT nextval('public.nivel_idnivel_seq'),
-    idjuego         integer,
+    idjuego         integer NOT NULL,
     numeronivel     integer NOT NULL,
     capacidadextra  integer DEFAULT 0 NOT NULL,
     estadohash      character varying(64),
     validado        character varying DEFAULT 'N',
     subidopor       character varying,
     CONSTRAINT nivel_pkey PRIMARY KEY (idnivel),
-    CONSTRAINT nivel_idjuego_fkey FOREIGN KEY (idjuego) REFERENCES public.juego(idjuego) ON DELETE SET NULL
+    CONSTRAINT nivel_idjuego_fkey FOREIGN KEY (idjuego) REFERENCES public.juego(idjuego) ON DELETE RESTRICT
 );
 CREATE SEQUENCE public.nivel_idnivel_seq AS integer OWNED BY public.nivel.idnivel;
 
 -- Índice único: dentro del mismo juego, numeronivel no puede repetirse
 CREATE UNIQUE INDEX nivel_idjuego_numeronivel_uidx
-  ON public.nivel(idjuego, numeronivel)
-  WHERE idjuego IS NOT NULL;
+  ON public.nivel(idjuego, numeronivel);
 
 CREATE TABLE public.grupo (
     idgrupo     integer NOT NULL DEFAULT nextval('public.grupo_idgrupo_seq'),

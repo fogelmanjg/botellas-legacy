@@ -41,7 +41,7 @@ export interface Nivel {
   estadohash: string | null;
   validado: string;
   subidopor: string | null;
-  juego: Juego | null;
+  juego: Juego;
   grupos: GrupoDetalle[];
 }
 
@@ -50,7 +50,7 @@ export interface NivelResumen {
   numeronivel: number;
   capacidadextra: number;
   validado: string;
-  juego: Juego | null;
+  juego: Juego;
 }
 
 // Paleta de colores para el editor: letra -> color CSS
