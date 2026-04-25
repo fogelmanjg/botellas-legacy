@@ -132,8 +132,11 @@ class Estado:
     # ── estado del juego ─────────────────────────────────────────
 
     def esta_resuelto(self) -> bool:
-        """El juego se gana cuando todas las botellas activas están vacías o completas."""
-        return all(b.esta_vacia() or b.esta_completa() for b in self.botellas)
+        """El juego se gana cuando todas las botellas están vacías o completas
+        Y no quedan piezas flotando en el extra."""
+        if not all(b.esta_vacia() or b.esta_completa() for b in self.botellas):
+            return False
+        return not any(e is not None for e in self.extra)
 
     def hash(self) -> str:
         """Hash canónico del estado para detectar ciclos."""
