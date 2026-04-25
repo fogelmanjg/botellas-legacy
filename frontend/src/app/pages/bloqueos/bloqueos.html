@@ -1,0 +1,67 @@
+<div class="bloqueos">
+  <div class="header">
+    <h2>Tipos de bloqueo</h2>
+    <button class="btn-nuevo" (click)="abrirAlta()">+ Nuevo bloqueo</button>
+  </div>
+
+  @if (formularioAbierto) {
+    <div class="form-card">
+      <h3>{{ editando ? 'Editar bloqueo' : 'Nuevo bloqueo' }}</h3>
+
+      <label>
+        Nombre *
+        <input [(ngModel)]="formNombre" placeholder="Ej: Candado, Hielo, Cadena…" maxlength="100" />
+      </label>
+
+      <label>
+        Propiedades <span class="hint">(JSON opcional — estructura a definir)</span>
+        <textarea
+          [(ngModel)]="formProps"
+          rows="4"
+          placeholder='{ "turnos": 2 }'
+          [class.invalido]="propsError"
+        ></textarea>
+        @if (propsError) { <span class="error-campo">{{ propsError }}</span> }
+      </label>
+
+      @if (error) { <p class="error">{{ error }}</p> }
+
+      <div class="form-acciones">
+        <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+          {{ guardando ? 'Guardando…' : 'Guardar' }}
+        </button>
+        <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+      </div>
+    </div>
+  }
+
+  @if (cargando()) {
+    <p class="msg">Cargando…</p>
+  } @else if (bloqueos().length === 0) {
+    <p class="msg">No hay tipos de bloqueo todavía.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Propiedades</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (b of bloqueos(); track b.idbloqueo) {
+          <tr>
+            <td>{{ b.idbloqueo }}</td>
+            <td>{{ b.nombre }}</td>
+            <td class="props">{{ formatProps(b) }}</td>
+            <td class="acciones">
+              <button (click)="abrirEdicion(b)">Editar</button>
+              <button class="btn-eliminar" (click)="eliminar(b)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

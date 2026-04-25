@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Juego, Nivel, NivelResumen } from '../models';
+import { Juego, Bloqueo, Nivel, NivelResumen } from '../models';
 
 const BASE = 'http://localhost:3000';
 
@@ -22,6 +22,22 @@ export class ApiService {
 
   eliminarJuego(id: number) {
     return this.http.delete(`${BASE}/juegos/${id}`);
+  }
+
+  getBloqueos() {
+    return this.http.get<Bloqueo[]>(`${BASE}/bloqueos`);
+  }
+
+  crearBloqueo(nombre: string, propiedades: object | null) {
+    return this.http.post<Bloqueo>(`${BASE}/bloqueos`, { nombre, propiedades });
+  }
+
+  actualizarBloqueo(id: number, nombre: string, propiedades: object | null) {
+    return this.http.put<Bloqueo>(`${BASE}/bloqueos/${id}`, { nombre, propiedades });
+  }
+
+  eliminarBloqueo(id: number) {
+    return this.http.delete(`${BASE}/bloqueos/${id}`);
   }
 
   getNiveles(idjuego?: number) {

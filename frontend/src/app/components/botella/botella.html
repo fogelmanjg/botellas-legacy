@@ -7,7 +7,7 @@
       [class.oculto]="e === 'x'"
       (click)="onClickEspacio(i)"
     >
-      <span>{{ textoDe(e) }}</span>
+      <span [class.texto-oscuro]="esClaro(e)">{{ textoDe(e) }}</span>
     </div>
   }
   @if (bloqueada()) {

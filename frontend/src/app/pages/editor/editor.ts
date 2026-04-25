@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgStyle } from '@angular/common';
 import { ApiService } from '../../services/api';
 import { BotellaComponent } from '../../components/botella/botella';
-import { Juego, PALETA, LETRAS } from '../../models';
+import { Juego, PALETA, LETRAS, CLAROS } from '../../models';
 
 interface BotellaLocal {
   numerobotella: number;
@@ -76,6 +76,10 @@ export class Editor implements OnInit {
 
   colorDe(letra: string): string {
     return PALETA[letra] ?? '#ccc';
+  }
+
+  esClaro(letra: string): boolean {
+    return CLAROS.has(letra);
   }
 
   guardar() {

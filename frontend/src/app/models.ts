@@ -35,10 +35,22 @@ export interface NivelResumen {
 
 // Paleta de colores para el editor: letra -> color CSS
 export const PALETA: Record<string, string> = {
-  A: '#e74c3c', B: '#3498db', C: '#2ecc71', D: '#f39c12',
-  E: '#9b59b6', F: '#1abc9c', G: '#e67e22', H: '#e91e63',
-  I: '#00bcd4', J: '#8bc34a', K: '#ff5722', L: '#607d8b',
-  M: '#795548', N: '#9c27b0', O: '#03a9f4',
+  A: '#f1c40f', // Amarillo
+  B: '#1565c0', // Azul
+  C: '#4fc3f7', // Celeste
+  E: '#212121', // Negro
+  G: '#9e9e9e', // Gris
+  K: '#ffffff', // Blanco
+  L: '#5e35b1', // Violeta
+  M: '#6d4c41', // Marrón
+  N: '#ef6c00', // Naranja
+  O: '#f06292', // Rosa
+  P: '#8e24aa', // Púrpura
+  R: '#e53935', // Rojo
+  S: '#2e7d32', // Verde oscuro
+  V: '#66bb6a', // Verde claro
 };
 
 export const LETRAS = Object.keys(PALETA);
+
+export const CLAROS = new Set(['K', 'A', 'C', 'G', 'V']);

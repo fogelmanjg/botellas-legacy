@@ -63,6 +63,11 @@ h2 { margin-bottom: 20px; }
       transform: scale(1.15);
     }
 
+    &.texto-oscuro {
+      color: #111 !important;
+      text-shadow: none;
+    }
+
     &.borrador {
       background: #333;
       color: #e74c3c;

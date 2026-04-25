@@ -52,6 +52,7 @@
       <div
         class="chip"
         [class.activo]="colorActivo === letra"
+        [class.texto-oscuro]="esClaro(letra)"
         [ngStyle]="{ background: colorDe(letra) }"
         (click)="colorActivo = letra"
       >{{ letra }}</div>

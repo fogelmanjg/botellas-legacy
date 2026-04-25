@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { NgStyle } from '@angular/common';
-import { PALETA } from '../../models';
+import { PALETA, CLAROS } from '../../models';
 
 @Component({
   selector: 'app-botella',
@@ -12,12 +12,16 @@ export class BotellaComponent {
   espacios = input<(string | null)[]>([null, null, null, null]);
   seleccionada = input<boolean>(false);
   bloqueada = input<boolean>(false);
-  clickEspacio = output<number>(); // índice 0-3
+  clickEspacio = output<number>();
 
   colorDe(letra: string | null): string {
     if (!letra) return 'transparent';
     if (letra === 'x') return '#555';
     return PALETA[letra] ?? '#ccc';
+  }
+
+  esClaro(letra: string | null): boolean {
+    return !!letra && CLAROS.has(letra);
   }
 
   textoDe(letra: string | null): string {
