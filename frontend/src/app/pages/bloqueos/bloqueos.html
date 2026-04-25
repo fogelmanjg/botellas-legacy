@@ -10,19 +10,61 @@
 
       <label>
         Nombre *
-        <input [(ngModel)]="formNombre" placeholder="Ej: Candado, Hielo, Cadena…" maxlength="100" />
+        <input [(ngModel)]="formNombre" placeholder="Ej: Lona color" maxlength="100" />
       </label>
 
       <label>
-        Propiedades <span class="hint">(JSON opcional — estructura a definir)</span>
-        <textarea
-          [(ngModel)]="formProps"
-          rows="4"
-          placeholder='{ "turnos": 2 }'
-          [class.invalido]="propsError"
-        ></textarea>
-        @if (propsError) { <span class="error-campo">{{ propsError }}</span> }
+        Tipo
+        <select [(ngModel)]="formTipo">
+          <option [ngValue]="null">— Sin tipo —</option>
+          @for (t of tiposBloqueo; track t.valor) {
+            <option [value]="t.valor">{{ t.label }}</option>
+          }
+        </select>
       </label>
+
+      <label>
+        Bloquea <span class="hint">(descripción de qué impide)</span>
+        <input [(ngModel)]="formBloquea" placeholder="Ej: No permite sacar piezas" />
+      </label>
+
+      <div class="flags-grid">
+        <label>
+          Entrada <span class="hint">S/N/C</span>
+          <select [(ngModel)]="formEntrada">
+            <option value="S">S — permite</option>
+            <option value="N">N — bloquea</option>
+            <option value="C">C — solo color</option>
+          </select>
+        </label>
+
+        <label>
+          Salida <span class="hint">S/N</span>
+          <select [(ngModel)]="formSalida">
+            <option value="S">S — permite</option>
+            <option value="N">N — bloquea</option>
+          </select>
+        </label>
+
+        <label>
+          Vista <span class="hint">S/N</span>
+          <select [(ngModel)]="formVista">
+            <option value="S">S — visible</option>
+            <option value="N">N — oculta</option>
+          </select>
+        </label>
+
+        <label>
+          Desbloquea <span class="hint">N/G/C/S/A</span>
+          <select [(ngModel)]="formDesbloquea">
+            <option value="N">N — nunca</option>
+            <option value="G">G — botella del grupo</option>
+            <option value="C">C — color específico</option>
+            <option value="S">S — cualquier botella</option>
+            <option value="A">A — botella adyacente</option>
+          </select>
+        </label>
+      </div>
 
       @if (error) { <p class="error">{{ error }}</p> }
 
@@ -38,14 +80,18 @@
   @if (cargando()) {
     <p class="msg">Cargando…</p>
   } @else if (bloqueos().length === 0) {
-    <p class="msg">No hay tipos de bloqueo todavía.</p>
+    <p class="msg">No hay tipos de bloqueo.</p>
   } @else {
     <table>
       <thead>
         <tr>
           <th>#</th>
           <th>Nombre</th>
-          <th>Propiedades</th>
+          <th>Tipo</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Vista</th>
+          <th>Desbloquea</th>
           <th></th>
         </tr>
       </thead>
@@ -54,7 +100,11 @@
           <tr>
             <td>{{ b.idbloqueo }}</td>
             <td>{{ b.nombre }}</td>
-            <td class="props">{{ formatProps(b) }}</td>
+            <td>{{ b.tipo ?? '—' }}</td>
+            <td>{{ b.entrada }}</td>
+            <td>{{ b.salida }}</td>
+            <td>{{ b.vista }}</td>
+            <td>{{ b.desbloquea ?? '—' }}</td>
             <td class="acciones">
               <button (click)="abrirEdicion(b)">Editar</button>
               <button class="btn-eliminar" (click)="eliminar(b)">Eliminar</button>

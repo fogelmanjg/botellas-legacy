@@ -4,17 +4,34 @@ export interface Juego {
   editor: string | null;
 }
 
+export type TipoBloqueo = 'lona_color' | 'lona' | 'barrera' | 'traba' | 'contorno botella' | 'hielo sobre botella';
+
 export interface Bloqueo {
   idbloqueo: number;
   nombre: string;
-  propiedades: object | null;
+  tipo: TipoBloqueo | null;
+  bloquea: string | null;
+  desbloquea: string | null;
+  entrada: string;  // S=permite entrada, N=no permite, C=solo color específico
+  salida: string;   // S=permite salida, N=no permite
+  vista: string;    // S=piezas visibles, N=ocultas
+  css: string;
 }
 
-export interface Botella {
+export interface BotellaDetalle {
   idbotella: number;
   numerobotella: number;
+  color: string | null;
   bloqueo: Bloqueo | null;
-  espacios: (string | null)[];  // [espacio1, espacio2, espacio3, espacio4]
+  espacios: (string | null)[];
+}
+
+export interface GrupoDetalle {
+  idgrupo: number;
+  numerogrupo: number;
+  entrada: number;       // 1=arriba, 2=derecha, 3=abajo, 4=izquierda
+  bloqueo: Bloqueo | null;
+  botellas: BotellaDetalle[];
 }
 
 export interface Nivel {
@@ -22,14 +39,17 @@ export interface Nivel {
   numeronivel: number;
   capacidadextra: number;
   estadohash: string | null;
+  validado: string;
+  subidopor: string | null;
   juego: Juego | null;
-  botellas: Botella[];
+  grupos: GrupoDetalle[];
 }
 
 export interface NivelResumen {
   idnivel: number;
   numeronivel: number;
   capacidadextra: number;
+  validado: string;
   juego: Juego | null;
 }
 
@@ -52,5 +72,19 @@ export const PALETA: Record<string, string> = {
 };
 
 export const LETRAS = Object.keys(PALETA);
+
+export interface PasoSolucion {
+  tipo: 'botella_a_botella' | 'botella_a_extra' | 'extra_a_botella';
+  desde: number | null;
+  hasta: number | null;
+  piezas: string[];
+}
+
+export interface Solucion {
+  idnivel: number;
+  pasos: PasoSolucion[] | null;
+  estado: 'P' | 'R' | 'S' | 'X';
+  fechacalculo: string;
+}
 
 export const CLAROS = new Set(['K', 'A', 'C', 'G', 'V']);

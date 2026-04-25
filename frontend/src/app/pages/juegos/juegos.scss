@@ -1,7 +1,13 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+}
+
 .juegos {
   max-width: 700px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 20px 16px;
 }
 
 .header {

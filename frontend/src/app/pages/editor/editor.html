@@ -1,97 +1,200 @@
 <div class="editor">
-  <h2>Editor de nivel</h2>
 
-  <!-- Configuración del nivel -->
-  <section class="config">
-    <label>
-      Juego
-      <select [(ngModel)]="idjuegoSeleccionado">
-        <option [ngValue]="null">— Sin juego —</option>
-        @for (j of juegos(); track j.idjuego) {
-          <option [ngValue]="j.idjuego">{{ j.nombre }}</option>
+  <aside class="editor-panel">
+    <h2>{{ idnivel ? 'Editar nivel' : 'Nuevo nivel' }}</h2>
+
+    <section class="config">
+      <label>
+        Juego
+        <select [(ngModel)]="idjuegoSeleccionado">
+          <option [ngValue]="null">— Sin juego —</option>
+          @for (j of juegos(); track j.idjuego) {
+            <option [ngValue]="j.idjuego">{{ j.nombre }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Nivel #
+        <input type="number" [(ngModel)]="numeronivel" min="1" />
+      </label>
+
+      <label>
+        Botella extra
+        <input type="number" [(ngModel)]="capacidadextra" min="0" max="10" />
+      </label>
+    </section>
+
+    <section class="paleta">
+      <div class="chip borrador" [class.activo]="colorActivo === null"
+           (click)="colorActivo = null" title="Borrador">✕</div>
+      <div class="chip chip-oculto" [class.activo]="colorActivo === 'x'"
+           (click)="colorActivo = 'x'" title="Color desconocido">?</div>
+      @for (letra of letras; track letra) {
+        <div class="chip"
+             [class.activo]="colorActivo === letra"
+             [class.texto-oscuro]="esClaro(letra)"
+             [ngStyle]="{ background: colorDe(letra) }"
+             (click)="colorActivo = letra">{{ letra }}</div>
+      }
+    </section>
+
+    @if (idnivel !== null) {
+      <div class="solver-section">
+        <div class="solver-header">
+          <span class="solver-titulo">Solver</span>
+          <div class="solver-controles">
+            @if (solverStatus() === 'idle') {
+              <button class="btn-solver" (click)="resolverNivel()">Resolver</button>
+            } @else if (solverStatus() === 'resolviendo') {
+              <span class="solver-badge resolviendo">⏳ Resolviendo…</span>
+            } @else if (solverStatus() === 'resuelto') {
+              <span class="solver-badge ok">✓ {{ pasosSolver().length }} pasos</span>
+              <button class="btn-ver-pasos" (click)="verPasos.update(v => !v)"
+                      [title]="verPasos() ? 'Ocultar' : 'Ver pasos'">
+                {{ verPasos() ? '▲' : '▼' }}
+              </button>
+              <button class="btn-re-solver" (click)="resolverNivel()" title="Re-resolver">↺</button>
+            } @else if (solverStatus() === 'sin_solucion') {
+              <span class="solver-badge err">✕ Sin solución</span>
+              <button class="btn-re-solver" (click)="resolverNivel()">↺</button>
+            } @else if (solverStatus() === 'error') {
+              <span class="solver-badge err" [title]="solverMsg">⚠ Error</span>
+              <button class="btn-re-solver" (click)="resolverNivel()">↺</button>
+            }
+          </div>
+        </div>
+
+        @if (solverStatus() === 'resuelto' && verPasos()) {
+          <ol class="solver-pasos">
+            @for (paso of pasosSolver(); track $index) {
+              <li>
+                <span class="paso-num">{{ $index + 1 }}</span>
+                <span class="paso-chip"
+                      [ngStyle]="{ background: colorDe(paso.piezas[0]), color: esClaro(paso.piezas[0]) ? '#111' : '#fff' }">
+                  {{ paso.piezas[0] }}
+                </span>
+                <span class="paso-txt">{{ describirPaso(paso) }}</span>
+              </li>
+            }
+          </ol>
         }
-      </select>
-    </label>
-
-    <label>
-      Nivel #
-      <input type="number" [(ngModel)]="numeronivel" min="1" />
-    </label>
-
-    <label>
-      Botellas
-      <input type="number" [(ngModel)]="cantidadBotellas" min="2" max="20"
-             (change)="generarBotellas()" />
-    </label>
-
-    <label>
-      Botella extra (espacios)
-      <input type="number" [(ngModel)]="capacidadextra" min="0" max="10" />
-    </label>
-  </section>
-
-  <!-- Paleta de colores -->
-  <section class="paleta">
-    <span class="label-paleta">Color activo:</span>
-
-    <div
-      class="chip borrador"
-      [class.activo]="colorActivo === null"
-      (click)="colorActivo = null"
-      title="Borrador"
-    >✕</div>
-
-    <div
-      class="chip chip-oculto"
-      [class.activo]="colorActivo === 'x'"
-      (click)="colorActivo = 'x'"
-      title="Color desconocido"
-    >?</div>
-
-    @for (letra of letras; track letra) {
-      <div
-        class="chip"
-        [class.activo]="colorActivo === letra"
-        [class.texto-oscuro]="esClaro(letra)"
-        [ngStyle]="{ background: colorDe(letra) }"
-        (click)="colorActivo = letra"
-      >{{ letra }}</div>
+      </div>
     }
-  </section>
 
-  <!-- Botellas -->
-  <section class="tablero">
-    @for (b of botellas(); track b.numerobotella) {
-      <div class="botella-wrap">
-        <app-botella
-          [espacios]="b.espacios"
-          [bloqueada]="b.bloqueada"
-          (clickEspacio)="onClickEspacio(b, $event)"
-        />
-        <button class="btn-lock" (click)="toggleBloqueada(b)" title="Bloquear/desbloquear">
-          {{ b.bloqueada ? '🔓' : '🔒' }}
-        </button>
-        <span class="num">{{ b.numerobotella }}</span>
+    <div class="panel-bottom">
+      @if (error) { <p class="error">{{ error }}</p> }
+      <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : (idnivel ? 'Actualizar nivel' : 'Guardar nivel') }}
+      </button>
+    </div>
+  </aside>
+
+  <div class="editor-tablero">
+
+    <div class="tablero-header">
+      <button class="btn-agregar-grupo" (click)="agregarGrupo()">+ Grupo</button>
+    </div>
+
+    @for (g of grupos(); track g.numerogrupo; let gi = $index) {
+      <div class="fila-tablero">
+
+        <div class="grupo-header">
+          <span class="fila-label">Grupo {{ g.numerogrupo }}</span>
+
+          <label class="header-ctrl">
+            <select [(ngModel)]="g.entrada" title="Dirección de entrada">
+              @for (d of direcciones; track d.valor) {
+                <option [ngValue]="d.valor">{{ d.label }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="header-ctrl">
+            <select [(ngModel)]="g.idbloqueo" title="Bloqueo del grupo">
+              <option [ngValue]="null">— Sin bloqueo —</option>
+              @for (bl of bloqueoGrupales; track bl.idbloqueo) {
+                <option [ngValue]="bl.idbloqueo">{{ bl.nombre }}</option>
+              }
+            </select>
+          </label>
+
+          <button class="btn-sm" (click)="agregarBotella(gi)" title="Agregar botella">+ botella</button>
+          <button class="btn-sm btn-danger" (click)="eliminarGrupo(gi)" title="Eliminar grupo">✕ grupo</button>
+        </div>
+
+        <div class="fila-botellas grupo-bloqueo"
+             [class.grupo-lona]="tipoBloqueoGrupo(g) === 'lona'"
+             [class.grupo-barrera]="tipoBloqueoGrupo(g) === 'barrera'">
+
+          @for (b of g.botellas; track b.numerobotella; let bi = $index) {
+            <div class="botella-wrap">
+
+              <app-botella
+                [espacios]="b.espacios"
+                [bloqueada]="b.idbloqueo !== null || g.idbloqueo !== null"
+                [bloqueoTipo]="bloqueoTipoDe(b)"
+                [bloqueoColor]="b.color"
+                (clickEspacio)="onClickEspacio(g, b, $event)"
+              />
+
+              <div class="botella-controles">
+                <button class="btn-lock"
+                        [class.activo]="b.idbloqueo !== null"
+                        (click)="togglePanel(gi, bi)"
+                        title="Bloqueo individual">
+                  {{ b.idbloqueo !== null ? '🔒' : '🔓' }}
+                </button>
+                <button class="btn-del-botella" (click)="eliminarBotella(gi, bi)" title="Quitar">✕</button>
+              </div>
+
+              @if (panelVisible(gi, bi)) {
+                <div class="panel-bloqueo">
+                  <select [(ngModel)]="b.idbloqueo" (ngModelChange)="onBloqueoBotellaChange(b)">
+                    <option [ngValue]="null">— Sin bloqueo —</option>
+                    @for (bl of bloqueoIndividuales; track bl.idbloqueo) {
+                      <option [ngValue]="bl.idbloqueo">{{ bl.nombre }}</option>
+                    }
+                  </select>
+
+                  @if (mostrarSelectorColor(b.idbloqueo)) {
+                    <div class="grupo-selector">
+                      <span class="grupo-label">Color:</span>
+                      <select class="sel-color"
+                              [(ngModel)]="b.color"
+                              [ngStyle]="{ background: b.color ? colorDe(b.color) : '#1e1e2e', color: b.color && esClaro(b.color) ? '#111' : '#eee' }">
+                        <option [ngValue]="null">—</option>
+                        @for (letra of letras; track letra) {
+                          <option [ngValue]="letra">{{ letra }}</option>
+                        }
+                      </select>
+                    </div>
+                  }
+                </div>
+              }
+
+              <span class="num">{{ b.numerobotella }}</span>
+            </div>
+          }
+        </div>
+
       </div>
     }
 
     @if (capacidadextra > 0) {
-      <div class="botella-extra">
-        <div class="extra-label">Extra (vacía)</div>
-        <div class="extra-slots">
-          @for (i of [].constructor(capacidadextra); track $index) {
-            <div class="slot-extra"></div>
-          }
+      <div class="fila-tablero">
+        <div class="grupo-header"><span class="fila-label">Extra</span></div>
+        <div class="fila-botellas">
+          <div class="botella-extra">
+            <div class="extra-slots">
+              @for (i of [].constructor(capacidadextra); track $index) {
+                <div class="slot-extra"></div>
+              }
+            </div>
+          </div>
         </div>
       </div>
     }
-  </section>
 
-  @if (error) {
-    <p class="error">{{ error }}</p>
-  }
-
-  <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
-    {{ guardando ? 'Guardando...' : 'Guardar nivel' }}
-  </button>
+  </div>
 </div>

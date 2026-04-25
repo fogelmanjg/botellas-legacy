@@ -15,22 +15,67 @@
           <th>#</th>
           <th>Nivel</th>
           <th>Juego</th>
-          <th>Botella extra</th>
+          <th>Extra</th>
+          <th>Solución</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         @for (n of niveles(); track n.idnivel) {
+          @let estado = sv(n.idnivel);
+          @let abierto = pasosVis().has(n.idnivel);
+
           <tr>
             <td>{{ n.idnivel }}</td>
             <td>{{ n.numeronivel }}</td>
             <td>{{ n.juego?.nombre ?? '—' }}</td>
-            <td>{{ n.capacidadextra > 0 ? n.capacidadextra + ' espacios' : '—' }}</td>
+            <td>{{ n.capacidadextra > 0 ? n.capacidadextra + ' esp.' : '—' }}</td>
+
+            <td class="solver-col">
+              @if (estado.status === 'idle') {
+                <button class="btn-resolver" (click)="resolver(n.idnivel)">Resolver</button>
+              } @else if (estado.status === 'resolviendo') {
+                <span class="badge badge-resolviendo">⏳ Resolviendo…</span>
+              } @else if (estado.status === 'resuelto') {
+                <span class="badge badge-ok">✓ {{ estado.pasos!.length }} pasos</span>
+                <button class="btn-ver" (click)="togglePasos(n.idnivel)" [title]="abierto ? 'Ocultar pasos' : 'Ver pasos'">
+                  {{ abierto ? '▲' : '▼' }}
+                </button>
+                <button class="btn-re" (click)="resolver(n.idnivel)" title="Volver a resolver">↺</button>
+              } @else if (estado.status === 'sin_solucion') {
+                <span class="badge badge-err">✕ Sin solución</span>
+                <button class="btn-re" (click)="resolver(n.idnivel)" title="Volver a resolver">↺</button>
+              } @else if (estado.status === 'error') {
+                <span class="badge badge-err" [title]="estado.msg ?? ''">⚠ Error</span>
+                <button class="btn-resolver" (click)="resolver(n.idnivel)">Reintentar</button>
+              }
+            </td>
+
             <td class="acciones">
               <a [routerLink]="['/editor', n.idnivel]">Editar</a>
               <button (click)="eliminar(n.idnivel)">Eliminar</button>
             </td>
           </tr>
+
+          @if (estado.status === 'resuelto' && abierto) {
+            <tr class="pasos-row">
+              <td colspan="6">
+                <ol class="pasos-lista">
+                  @for (paso of estado.pasos!; track $index) {
+                    <li>
+                      <span class="paso-num">{{ $index + 1 }}</span>
+                      <span class="paso-chip"
+                            [style.background]="colorDe(paso.piezas[0])"
+                            [style.color]="esClaro(paso.piezas[0]) ? '#111' : '#fff'">
+                        {{ paso.piezas[0] }}
+                      </span>
+                      <span class="paso-texto">{{ describir(paso) }}</span>
+                    </li>
+                  }
+                </ol>
+              </td>
+            </tr>
+          }
         }
       </tbody>
     </table>

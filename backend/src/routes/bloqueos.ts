@@ -18,13 +18,22 @@ router.get("/:id", async (req: Request, res: Response) => {
   res.json(bloqueo);
 });
 
-// POST /bloqueos — { nombre, propiedades? }
+// POST /bloqueos
 router.post("/", async (req: Request, res: Response) => {
-  const { nombre, propiedades } = req.body;
+  const { nombre, tipo, bloquea, desbloquea, entrada, salida, vista, css } = req.body;
   if (typeof nombre !== "string" || nombre.trim() === "") {
     return res.status(400).json({ error: "nombre es requerido" });
   }
-  const bloqueo = repo().create({ nombre: nombre.trim(), propiedades: propiedades ?? null });
+  const bloqueo = repo().create({
+    nombre: nombre.trim(),
+    tipo: tipo ?? null,
+    bloquea: bloquea?.trim() || null,
+    desbloquea: desbloquea ?? "N",
+    entrada: entrada ?? "N",
+    salida: salida ?? "N",
+    vista: vista ?? "N",
+    css: css ?? "S",
+  });
   await repo().save(bloqueo);
   res.status(201).json(bloqueo);
 });
@@ -34,7 +43,13 @@ router.put("/:id", async (req: Request, res: Response) => {
   const bloqueo = await repo().findOneBy({ idbloqueo: Number(req.params.id) });
   if (!bloqueo) return res.status(404).json({ error: "Bloqueo no encontrado" });
   if (typeof req.body.nombre === "string") bloqueo.nombre = req.body.nombre.trim();
-  if ("propiedades" in req.body) bloqueo.propiedades = req.body.propiedades ?? null;
+  if ("tipo"       in req.body) bloqueo.tipo       = req.body.tipo ?? null;
+  if ("bloquea"    in req.body) bloqueo.bloquea    = req.body.bloquea?.trim() || null;
+  if ("desbloquea" in req.body) bloqueo.desbloquea = req.body.desbloquea ?? "N";
+  if ("entrada"    in req.body) bloqueo.entrada    = req.body.entrada ?? "N";
+  if ("salida"     in req.body) bloqueo.salida     = req.body.salida  ?? "N";
+  if ("vista"      in req.body) bloqueo.vista      = req.body.vista   ?? "N";
+  if ("css"        in req.body) bloqueo.css        = req.body.css     ?? "S";
   await repo().save(bloqueo);
   res.json(bloqueo);
 });

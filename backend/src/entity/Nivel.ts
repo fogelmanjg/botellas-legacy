@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, OneToOne, JoinColumn } from "typeorm";
 import { Juego } from "./Juego";
-import { Botella } from "./Botella";
+import { Grupo } from "./Grupo";
 import { Solucion } from "./Solucion";
 
 @Entity("nivel")
@@ -8,24 +8,29 @@ export class Nivel {
   @PrimaryGeneratedColumn({ name: "idnivel" })
   idnivel!: number;
 
-  @ManyToOne(() => Juego, (j: Juego) => j.niveles, { nullable: true, onDelete: "SET NULL" })
+  @ManyToOne(() => Juego, (j) => j.niveles, { nullable: true, onDelete: "SET NULL" })
   @JoinColumn({ name: "idjuego" })
   juego!: Juego | null;
 
   @Column({ name: "numeronivel" })
   numeronivel!: number;
 
-  // 0 = sin botella extra; >0 = cantidad de espacios de la botella extra
   @Column({ name: "capacidadextra", default: 0 })
   capacidadextra!: number;
 
-  // Hash normalizado del estado inicial para detectar niveles duplicados
   @Column({ name: "estadohash", type: "varchar", length: 64, nullable: true })
   estadohash!: string | null;
 
-  @OneToMany(() => Botella, (b: Botella) => b.nivel)
-  botellas!: Botella[];
+  // N=no validado, S=validado
+  @Column({ type: "varchar", default: "N" })
+  validado!: string;
 
-  @OneToOne(() => Solucion, (s: Solucion) => s.nivel)
+  @Column({ type: "varchar", nullable: true })
+  subidopor!: string | null;
+
+  @OneToMany(() => Grupo, (g) => g.nivel)
+  grupos!: Grupo[];
+
+  @OneToOne(() => Solucion, (s) => s.nivel)
   solucion!: Solucion | null;
 }
