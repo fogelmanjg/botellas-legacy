@@ -38,6 +38,11 @@ CREATE TABLE public.nivel (
 );
 CREATE SEQUENCE public.nivel_idnivel_seq AS integer OWNED BY public.nivel.idnivel;
 
+-- Índice único: dentro del mismo juego, numeronivel no puede repetirse
+CREATE UNIQUE INDEX nivel_idjuego_numeronivel_uidx
+  ON public.nivel(idjuego, numeronivel)
+  WHERE idjuego IS NOT NULL;
+
 CREATE TABLE public.grupo (
     idgrupo     integer NOT NULL DEFAULT nextval('public.grupo_idgrupo_seq'),
     idnivel     integer NOT NULL,

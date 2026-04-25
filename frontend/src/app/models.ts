@@ -88,3 +88,11 @@ export interface Solucion {
 }
 
 export const CLAROS = new Set(['K', 'A', 'C', 'G', 'V']);
+
+export interface Estrategia {
+  idestategia: number;
+  nombre: string;
+  descripcion: string | null;
+  peso: number;
+  activa: string;  // 'S' | 'N'
+}

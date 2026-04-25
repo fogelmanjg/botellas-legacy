@@ -179,8 +179,11 @@ router.post("/", async (req: Request, res: Response) => {
     await crearGrupos(em, nivel, gruposInput);
 
     res.status(201).json({ idnivel: nivel.idnivel });
-  }).catch((err: Error & { status?: number }) => {
-    if (!res.headersSent) res.status(err.status ?? 500).json({ error: err.message });
+  }).catch((err: any) => {
+    if (!res.headersSent) {
+      if (err.code === "23505") return res.status(409).json({ error: "Ya existe un nivel con ese número en este juego" });
+      res.status(err.status ?? 500).json({ error: err.message });
+    }
   });
 });
 
@@ -227,8 +230,11 @@ router.put("/:id", async (req: Request, res: Response) => {
     }
 
     res.json({ idnivel: nivel.idnivel });
-  }).catch((err: Error & { status?: number }) => {
-    if (!res.headersSent) res.status(err.status ?? 500).json({ error: err.message });
+  }).catch((err: any) => {
+    if (!res.headersSent) {
+      if (err.code === "23505") return res.status(409).json({ error: "Ya existe un nivel con ese número en este juego" });
+      res.status(err.status ?? 500).json({ error: err.message });
+    }
   });
 });
 

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Juego, Bloqueo, Nivel, NivelResumen, Solucion } from '../models';
+import { Juego, Bloqueo, Nivel, NivelResumen, Solucion, Estrategia } from '../models';
 
 const BASE = 'http://localhost:3000';
 
@@ -58,5 +58,19 @@ export class ApiService {
   }
   getSolucion(id: number) {
     return this.http.get<Solucion>(`${BASE}/niveles/${id}/solucion`);
+  }
+
+  // ── Estrategias ──────────────────────────────────────────
+  getEstrategias() {
+    return this.http.get<Estrategia[]>(`${BASE}/estrategias`);
+  }
+  crearEstrategia(body: Partial<Estrategia>) {
+    return this.http.post<Estrategia>(`${BASE}/estrategias`, body);
+  }
+  actualizarEstrategia(id: number, body: Partial<Estrategia>) {
+    return this.http.put<Estrategia>(`${BASE}/estrategias/${id}`, body);
+  }
+  eliminarEstrategia(id: number) {
+    return this.http.delete(`${BASE}/estrategias/${id}`);
   }
 }

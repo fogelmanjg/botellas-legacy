@@ -1,0 +1,90 @@
+<div class="estrategias">
+  <div class="header">
+    <h2>Estrategias del solver</h2>
+    <button class="btn-nuevo" (click)="abrirAlta()">+ Nueva estrategia</button>
+  </div>
+
+  <!-- Formulario alta / edición -->
+  @if (formularioAbierto) {
+    <div class="form-card">
+      <h3>{{ editando ? 'Editar estrategia' : 'Nueva estrategia' }}</h3>
+
+      <label>
+        Nombre *
+        <input [(ngModel)]="formNombre" placeholder="s040_mi_estrategia" maxlength="50" />
+      </label>
+
+      <label>
+        Descripción
+        <textarea [(ngModel)]="formDescripcion" rows="3" placeholder="Qué detecta y qué genera…"></textarea>
+      </label>
+
+      <div class="fila-doble">
+        <label>
+          Peso (menor = mayor prioridad)
+          <input type="number" [(ngModel)]="formPeso" min="0" max="9999" />
+        </label>
+        <label class="label-activa">
+          Activa
+          <button
+            class="toggle"
+            [class.on]="formActiva"
+            (click)="formActiva = !formActiva"
+            type="button">
+            {{ formActiva ? 'SÍ' : 'NO' }}
+          </button>
+        </label>
+      </div>
+
+      @if (error) { <p class="error">{{ error }}</p> }
+
+      <div class="form-acciones">
+        <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+          {{ guardando ? 'Guardando…' : 'Guardar' }}
+        </button>
+        <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+      </div>
+    </div>
+  }
+
+  <!-- Listado -->
+  @if (cargando()) {
+    <p class="msg">Cargando…</p>
+  } @else if (estrategias().length === 0) {
+    <p class="msg">No hay estrategias todavía.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Peso</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Activa</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (e of estrategias(); track e.idestategia) {
+          <tr [class.inactiva]="e.activa === 'N'">
+            <td class="peso">{{ e.peso }}</td>
+            <td class="nombre">{{ e.nombre }}</td>
+            <td class="desc">{{ e.descripcion ?? '—' }}</td>
+            <td class="col-activa">
+              <button
+                class="toggle"
+                [class.on]="e.activa === 'S'"
+                (click)="toggleActiva(e)"
+                type="button">
+                {{ e.activa === 'S' ? 'SÍ' : 'NO' }}
+              </button>
+            </td>
+            <td class="acciones">
+              <button (click)="abrirEdicion(e)">Editar</button>
+              <button class="btn-eliminar" (click)="eliminar(e)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
