@@ -30,3 +30,9 @@ El proyecto resuelve el "water sort puzzle" (juego de ordenar tubos/botellas). E
 **Why:** El solver debe manejar estado parcialmente observable. Los colores ocultos no se conocen hasta que se exponen.
 
 **How to apply:** El estado del juego en el modelo debe soportar: colores normales, color=null (vacío), color="?" (ocupado pero desconocido), botella=bloqueada. El solver BFS necesita manejar incertidumbre cuando hay colores ocultos.
+
+**Auto-relleno de botella vacía (mecánica crítica para el solver):**
+- Cuando una botella normal queda vacía y la botella extra tiene piezas, el juego AUTOMÁTICAMENTE elige una pieza del extra (al azar) y la pone en la botella vacía.
+- El jugador puede sacar esa pieza de vuelta al extra, pero el juego pondrá de nuevo una pieza (la misma u otra) en la botella vacía.
+- Invariante: **no puede existir una botella vacía mientras el extra tenga piezas**.
+- **Implicación para el solver (rules.py):** no generar `botella_a_extra` normal cuando src.altura()==1 y extra tiene piezas (no-op o no determinístico). En su lugar, generar movimiento `swap_con_extra`: intercambio atómico entre la pieza de la botella y un color específico del extra. Como la probabilidad de conseguir cualquier color del extra es 1 (reintentos), se modela como un movimiento determinístico. Se genera uno por cada color distinto en el extra. En `aplicar_movimiento`: la pieza sacada de la botella reemplaza la ocurrencia más alta del color deseado en el extra, y la botella queda con el color deseado.

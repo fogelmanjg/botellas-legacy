@@ -91,18 +91,32 @@ def _caso2(estado: Estado) -> list[dict]:
     # ── Botella → Extra (solo 1 pieza) ──────────────────────────
     # Buscar el primer slot libre en extra
     slot_libre_extra = next((i for i, e in enumerate(extra) if e is None), None)
-    extra_tiene_piezas = any(e is not None for e in extra)
+    colores_en_extra = [e for e in extra if e is not None]
+    extra_tiene_piezas = len(colores_en_extra) > 0
     if slot_libre_extra is not None:
         for i, src in enumerate(botellas):
             if src.esta_vacia() or src.esta_completa():
                 continue
             if src.bloqueada_salida():
                 continue
-            # Si la botella tiene solo 1 pieza y el extra ya tiene piezas,
-            # el movimiento dejaría la botella vacía: el juego auto-rellenaría
-            # con una pieza aleatoria del extra → no modelable, no generar.
+
             if src.altura() == 1 and extra_tiene_piezas:
-                continue
+                # Vaciar la botella dejaría un hueco que el juego rellena con
+                # una pieza aleatoria del extra. Imposible predecir cuál, pero
+                # la probabilidad de conseguir cualquier color del extra es 1.
+                # Modelamos como un swap atómico: la pieza de la botella va al
+                # extra y un color específico del extra viene a la botella.
+                color_actual = src.tope()
+                for color_deseado in set(colores_en_extra):
+                    if color_deseado != color_actual:
+                        movs.append({
+                            "tipo": "swap_con_extra",
+                            "desde": i,
+                            "hasta": i,
+                            "piezas": [color_deseado],
+                        })
+                continue  # no generar botella_a_extra normal (sería un no-op)
+
             color = src.tope()
             movs.append({
                 "tipo": "botella_a_extra",
@@ -167,5 +181,19 @@ def aplicar_movimiento(estado: Estado, mov: dict) -> Estado:
         color = nuevo.extra[idx_e]
         nuevo.extra[idx_e] = None
         dst.poner([color])
+
+    elif mov["tipo"] == "swap_con_extra":
+        # Intercambio atómico: la pieza de la botella va al extra y el color
+        # deseado viene del extra a la botella (probabilidad=1 con reintentos).
+        src = nuevo.botellas[mov["desde"]]
+        color_deseado = mov["piezas"][0]
+        color_sacado = src.tope()
+        # Reemplazar la ocurrencia más alta (topmost) de color_deseado en extra
+        for i in range(len(nuevo.extra) - 1, -1, -1):
+            if nuevo.extra[i] == color_deseado:
+                nuevo.extra[i] = color_sacado
+                break
+        src.sacar(1)
+        src.poner([color_deseado])
 
     return nuevo
