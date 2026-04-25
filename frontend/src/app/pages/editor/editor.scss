@@ -1,0 +1,159 @@
+.editor {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+h2 { margin-bottom: 20px; }
+
+.config {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: #aaa;
+
+    input, select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #1e1e2e;
+      color: #eee;
+      font-size: 15px;
+      width: 130px;
+    }
+  }
+}
+
+.paleta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+
+  .label-paleta {
+    font-size: 13px;
+    color: #aaa;
+    margin-right: 4px;
+  }
+
+  .chip {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    color: rgba(255,255,255,0.85);
+    transition: border-color 0.1s, transform 0.1s;
+
+    &.activo {
+      border-color: #f1c40f;
+      transform: scale(1.15);
+    }
+
+    &.borrador {
+      background: #333;
+      color: #e74c3c;
+      font-size: 16px;
+    }
+
+    &.chip-oculto {
+      background: repeating-linear-gradient(
+        45deg,
+        #444,
+        #444 4px,
+        #666 4px,
+        #666 8px
+      );
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+    }
+  }
+}
+
+.tablero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 28px;
+}
+
+.botella-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  .btn-lock {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .num {
+    font-size: 11px;
+    color: #666;
+  }
+}
+
+.botella-extra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  .extra-label {
+    font-size: 11px;
+    color: #888;
+  }
+
+  .extra-slots {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 2px;
+  }
+
+  .slot-extra {
+    width: 56px;
+    height: 44px;
+    border: 2px dashed #444;
+    border-radius: 4px;
+    background: #1a1a2e;
+  }
+}
+
+.error {
+  color: #e74c3c;
+  margin-bottom: 12px;
+}
+
+.btn-guardar {
+  padding: 10px 28px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) { background: #2980b9; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}

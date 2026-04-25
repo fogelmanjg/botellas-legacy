@@ -1,0 +1,38 @@
+<div class="niveles">
+  <div class="header">
+    <h2>Niveles guardados</h2>
+    <a routerLink="/editor" class="btn-nuevo">+ Nuevo nivel</a>
+  </div>
+
+  @if (cargando()) {
+    <p class="msg">Cargando...</p>
+  } @else if (niveles().length === 0) {
+    <p class="msg">No hay niveles todavía. <a routerLink="/editor">Creá el primero.</a></p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nivel</th>
+          <th>Juego</th>
+          <th>Botella extra</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (n of niveles(); track n.idnivel) {
+          <tr>
+            <td>{{ n.idnivel }}</td>
+            <td>{{ n.numeronivel }}</td>
+            <td>{{ n.juego?.nombre ?? '—' }}</td>
+            <td>{{ n.capacidadextra > 0 ? n.capacidadextra + ' espacios' : '—' }}</td>
+            <td class="acciones">
+              <a [routerLink]="['/editor', n.idnivel]">Editar</a>
+              <button (click)="eliminar(n.idnivel)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

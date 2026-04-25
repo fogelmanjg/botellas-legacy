@@ -1,0 +1,96 @@
+<div class="editor">
+  <h2>Editor de nivel</h2>
+
+  <!-- Configuración del nivel -->
+  <section class="config">
+    <label>
+      Juego
+      <select [(ngModel)]="idjuegoSeleccionado">
+        <option [ngValue]="null">— Sin juego —</option>
+        @for (j of juegos(); track j.idjuego) {
+          <option [ngValue]="j.idjuego">{{ j.nombre }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Nivel #
+      <input type="number" [(ngModel)]="numeronivel" min="1" />
+    </label>
+
+    <label>
+      Botellas
+      <input type="number" [(ngModel)]="cantidadBotellas" min="2" max="20"
+             (change)="generarBotellas()" />
+    </label>
+
+    <label>
+      Botella extra (espacios)
+      <input type="number" [(ngModel)]="capacidadextra" min="0" max="10" />
+    </label>
+  </section>
+
+  <!-- Paleta de colores -->
+  <section class="paleta">
+    <span class="label-paleta">Color activo:</span>
+
+    <div
+      class="chip borrador"
+      [class.activo]="colorActivo === null"
+      (click)="colorActivo = null"
+      title="Borrador"
+    >✕</div>
+
+    <div
+      class="chip chip-oculto"
+      [class.activo]="colorActivo === 'x'"
+      (click)="colorActivo = 'x'"
+      title="Color desconocido"
+    >?</div>
+
+    @for (letra of letras; track letra) {
+      <div
+        class="chip"
+        [class.activo]="colorActivo === letra"
+        [ngStyle]="{ background: colorDe(letra) }"
+        (click)="colorActivo = letra"
+      >{{ letra }}</div>
+    }
+  </section>
+
+  <!-- Botellas -->
+  <section class="tablero">
+    @for (b of botellas(); track b.numerobotella) {
+      <div class="botella-wrap">
+        <app-botella
+          [espacios]="b.espacios"
+          [bloqueada]="b.bloqueada"
+          (clickEspacio)="onClickEspacio(b, $event)"
+        />
+        <button class="btn-lock" (click)="toggleBloqueada(b)" title="Bloquear/desbloquear">
+          {{ b.bloqueada ? '🔓' : '🔒' }}
+        </button>
+        <span class="num">{{ b.numerobotella }}</span>
+      </div>
+    }
+
+    @if (capacidadextra > 0) {
+      <div class="botella-extra">
+        <div class="extra-label">Extra (vacía)</div>
+        <div class="extra-slots">
+          @for (i of [].constructor(capacidadextra); track $index) {
+            <div class="slot-extra"></div>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+    {{ guardando ? 'Guardando...' : 'Guardar nivel' }}
+  </button>
+</div>

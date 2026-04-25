@@ -1,0 +1,67 @@
+.niveles {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.btn-nuevo {
+  padding: 8px 18px;
+  background: #3498db;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  &:hover { background: #2980b9; }
+}
+
+.msg { color: #aaa; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid #333;
+    color: #aaa;
+    font-size: 13px;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #2a2a3e;
+    font-size: 14px;
+  }
+
+  tr:hover td { background: #1e1e2e; }
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+
+  a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 13px;
+    &:hover { text-decoration: underline; }
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 0;
+    &:hover { text-decoration: underline; }
+  }
+}

@@ -1,0 +1,16 @@
+<div class="botella" [class.seleccionada]="seleccionada()" [class.bloqueada]="bloqueada()">
+  @for (e of espacios(); track $index; let i = $index) {
+    <div
+      class="espacio"
+      [ngStyle]="{ background: colorDe(e) }"
+      [class.vacio]="!e"
+      [class.oculto]="e === 'x'"
+      (click)="onClickEspacio(i)"
+    >
+      <span>{{ textoDe(e) }}</span>
+    </div>
+  }
+  @if (bloqueada()) {
+    <div class="bloqueo-overlay">X</div>
+  }
+</div>
