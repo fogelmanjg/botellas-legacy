@@ -91,11 +91,17 @@ def _caso2(estado: Estado) -> list[dict]:
     # ── Botella → Extra (solo 1 pieza) ──────────────────────────
     # Buscar el primer slot libre en extra
     slot_libre_extra = next((i for i, e in enumerate(extra) if e is None), None)
+    extra_tiene_piezas = any(e is not None for e in extra)
     if slot_libre_extra is not None:
         for i, src in enumerate(botellas):
             if src.esta_vacia() or src.esta_completa():
                 continue
             if src.bloqueada_salida():
+                continue
+            # Si la botella tiene solo 1 pieza y el extra ya tiene piezas,
+            # el movimiento dejaría la botella vacía: el juego auto-rellenaría
+            # con una pieza aleatoria del extra → no modelable, no generar.
+            if src.altura() == 1 and extra_tiene_piezas:
                 continue
             color = src.tope()
             movs.append({
