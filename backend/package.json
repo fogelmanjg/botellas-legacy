@@ -12,6 +12,7 @@
     "migration:show": "typeorm-ts-node-commonjs migration:show -d src/data-source.ts"
   },
   "dependencies": {
+    "dotenv": "^16.1.4",
     "@types/cors": "^2.8.19",
     "cors": "^2.8.6",
     "express": "^4.18.2",

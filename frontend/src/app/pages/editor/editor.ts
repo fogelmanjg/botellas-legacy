@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NgStyle } from '@angular/common';
+import { NgStyle, NgClass } from '@angular/common';
 import { ApiService } from '../../services/api';
 import { BotellaComponent } from '../../components/botella/botella';
 import { Juego, Bloqueo, Nivel, TipoBloqueo, PasoSolucion, PALETA, LETRAS, CLAROS } from '../../models';
@@ -22,7 +22,7 @@ interface GrupoLocal {
 
 @Component({
   selector: 'app-editor',
-  imports: [FormsModule, NgStyle, BotellaComponent],
+  imports: [FormsModule, NgStyle, NgClass, BotellaComponent],
   templateUrl: './editor.html',
   styleUrl: './editor.scss',
 })
