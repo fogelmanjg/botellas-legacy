@@ -21,7 +21,7 @@
 
       <label>
         Botella extra
-        <input type="number" [(ngModel)]="capacidadextra" min="0" max="10" />
+        <input type="number" [(ngModel)]="capacidadextra" min="0" />
       </label>
     </section>
 
@@ -38,6 +38,19 @@
              (click)="colorActivo = letra">{{ letra }}</div>
       }
     </section>
+
+    @if (capacidadextra > 0) {
+      <div class="extra-panel">
+        <div class="panel-label">Extra</div>
+        <div class="botella-extra">
+          <div class="extra-slots">
+            @for (i of [].constructor(capacidadextra); track $index) {
+              <div class="slot-extra"></div>
+            }
+          </div>
+        </div>
+      </div>
+    }
 
     @if (idnivel !== null) {
       <div class="solver-section">
@@ -124,28 +137,34 @@
         </div>
 
         <div class="fila-botellas grupo-bloqueo"
-             [class.grupo-lona]="tipoBloqueoGrupo(g) === 'lona'"
-             [class.grupo-barrera]="tipoBloqueoGrupo(g) === 'barrera'">
+          [ngClass]="{ 'entrada-arriba': g.entrada==1, 'entrada-derecha': g.entrada==2, 'entrada-abajo': g.entrada==3, 'entrada-izquierda': g.entrada==4 }"
+          [class.grupo-lona]="tipoBloqueoGrupo(g) === 'lona'"
+          [class.grupo-barrera]="tipoBloqueoGrupo(g) === 'barrera'">
 
           @for (b of g.botellas; track b.numerobotella; let bi = $index) {
             <div class="botella-wrap">
 
-              <app-botella
-                [espacios]="b.espacios"
-                [bloqueada]="b.idbloqueo !== null || g.idbloqueo !== null"
-                [bloqueoTipo]="bloqueoTipoDe(b)"
-                [bloqueoColor]="b.color"
-                (clickEspacio)="onClickEspacio(g, b, $event)"
-              />
-
-              <div class="botella-controles">
+              <div class="col-lock">
                 <button class="btn-lock"
                         [class.activo]="b.idbloqueo !== null"
                         (click)="togglePanel(gi, bi)"
                         title="Bloqueo individual">
                   {{ b.idbloqueo !== null ? '🔒' : '🔓' }}
                 </button>
+              </div>
+
+              <div class="col-del">
                 <button class="btn-del-botella" (click)="eliminarBotella(gi, bi)" title="Quitar">✕</button>
+              </div>
+
+              <div class="botella-visual" [ngClass]="{ 'rotated-right': g.entrada==2, 'rotated-left': g.entrada==4, 'rotated-down': g.entrada==3 }">
+                <app-botella
+                  [espacios]="b.espacios"
+                  [bloqueada]="b.idbloqueo !== null || g.idbloqueo !== null"
+                  [bloqueoTipo]="bloqueoTipoDe(b)"
+                  [bloqueoColor]="b.color"
+                  (clickEspacio)="onClickEspacio(g, b, $event)">
+                </app-botella>
               </div>
 
               @if (panelVisible(gi, bi)) {
@@ -181,20 +200,8 @@
       </div>
     }
 
-    @if (capacidadextra > 0) {
-      <div class="fila-tablero">
-        <div class="grupo-header"><span class="fila-label">Extra</span></div>
-        <div class="fila-botellas">
-          <div class="botella-extra">
-            <div class="extra-slots">
-              @for (i of [].constructor(capacidadextra); track $index) {
-                <div class="slot-extra"></div>
-              }
-            </div>
-          </div>
-        </div>
-      </div>
-    }
+    <!-- Extra panel is shown on the aside only; removed duplicate rendering here -->
 
   </div>
+
 </div>
