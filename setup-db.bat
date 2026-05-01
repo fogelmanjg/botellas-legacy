@@ -1,6 +1,8 @@
 @echo off
-:: Crea la base de datos botellas y carga el schema + seed data
-:: Requiere PostgreSQL instalado con usuario postgres / password postgres
+:: Crea la base de datos botellas y carga el schema.
+:: Si existe db\data.json, restaura todos los datos desde ahi (via restore.py).
+:: Si no existe, carga los datos minimos desde db\seed.sql.
+:: Requiere PostgreSQL instalado con usuario postgres / password postgres.
 
 set PGPASSWORD=postgres
 set PSQL=psql -U postgres
@@ -24,15 +26,24 @@ if %errorlevel% neq 0 (
   exit /b 1
 )
 
-:: Aplicar seed data
-echo Cargando datos iniciales...
-%PSQL% -d botellas -f "%~dp0db\seed.sql"
+:: Restaurar datos
+if exist "%~dp0db\data.json" (
+    echo Restaurando datos desde db\data.json...
+    python "%~dp0db\restore.py"
+    if %errorlevel% neq 0 (
+        echo ERROR al restaurar datos. Ver mensaje arriba.
+        pause
+        exit /b 1
+    )
+) else (
+    echo No se encontro db\data.json - cargando seed minimo...
+    %PSQL% -d botellas -f "%~dp0db\seed.sql"
+)
 
 echo.
 echo ============================================================
 echo  Base de datos lista.
-echo  SIGUIENTE PASO: setup-memory.bat (para la memoria de Claude)
-echo  Luego iniciar:
+echo  Iniciar servicios:
 echo    backend:  cd backend ^& npm run dev
 echo    frontend: cd frontend ^& npm start
 echo    solver:   solver\run.bat

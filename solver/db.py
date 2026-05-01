@@ -69,6 +69,7 @@ def cargar_nivel(idnivel: int) -> dict:
                     "vista": b["bl_vista"],
                     "desbloquea": b["bl_desbloquea"],
                     "tipo": b["bl_tipo"],
+                    "color_botella": b["color"],
                 }
             botellas_por_grupo[gid].append({
                 "idbotella": b["idbotella"],

@@ -1,15 +1,10 @@
 """
 S010 — Completar unitaria
 
-Detecta: botella A tiene 3 piezas del mismo color C (y 1 libre)
-         y existe exactamente 1 pieza de C accesible:
-           - tope de otra botella B con altura == 1, o
-           - tope del extra (la pieza ya llegó ahí en el paso anterior)
-Genera:  el siguiente paso para llevar esa pieza a A.
-
-Al ser invocada en pasos consecutivos resuelve la secuencia completa:
-  llamada 1 → B → Extra   (mueve la pieza al tránsito)
-  llamada 2 → Extra → A   (completa la botella)
+Detecta: botella A tiene 3 piezas del mismo color C (1 libre)
+         y existe exactamente 1 pieza de C accesible en otra botella B (altura == 1).
+Genera:  hint botella_a_extra desde B. El auto-movimiento llevará C a A
+         si A es la botella de color para C, o el DFS explorará si no lo es.
 """
 
 from state import Estado
@@ -21,25 +16,10 @@ def detectar(estado: Estado) -> dict | None:
             continue
         color = a.tope()
         if any(e != color for e in a.espacios if e is not None):
-            continue  # no todas las piezas son del mismo color
+            continue
         if a.bloqueada_entrada(color):
             continue
 
-        # ── Caso: la pieza ya está en el extra ──────────────────
-        if estado.capacidad_extra > 0:
-            for i in range(len(estado.extra) - 1, -1, -1):
-                if estado.extra[i] is not None:
-                    if estado.extra[i] == color:
-                        return {
-                            'tipo': 'extra_a_botella',
-                            'desde': None,
-                            'hasta': a.idx,
-                            'piezas': [color],
-                            '_extra_idx': i,
-                        }
-                    break  # el tope del extra es otro color, no sirve
-
-        # ── Caso: hay una botella con exactamente 1 pieza de C ──
         for b in estado.botellas:
             if b is a:
                 continue
@@ -54,14 +34,9 @@ def detectar(estado: Estado) -> dict | None:
                     'desde': b.idx,
                     'hasta': a.idx,
                     'piezas': [color],
+                    'automaticos': [],
                 }
-            else:
-                if any(e is None for e in estado.extra):
-                    return {
-                        'tipo': 'botella_a_extra',
-                        'desde': b.idx,
-                        'hasta': None,
-                        'piezas': [color],
-                    }
+            if any(e is None for e in estado.extra):
+                return {'tipo': 'botella_a_extra', 'desde': b.idx}
 
     return None

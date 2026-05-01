@@ -82,12 +82,24 @@
           <ol class="solver-pasos">
             @for (paso of pasosSolver(); track $index) {
               <li>
-                <span class="paso-num">{{ $index + 1 }}</span>
-                <span class="paso-chip"
-                      [ngStyle]="{ background: colorDe(paso.piezas[0]), color: esClaro(paso.piezas[0]) ? '#111' : '#fff' }">
-                  {{ paso.piezas[0] }}
-                </span>
-                <span class="paso-txt">{{ describirPaso(paso) }}</span>
+                <div class="paso-jugador">
+                  <span class="paso-num">{{ $index + 1 }}</span>
+                  <span class="paso-chip"
+                        [ngStyle]="{ background: colorDe(paso.piezas[0]), color: esClaro(paso.piezas[0]) ? '#111' : '#fff' }">
+                    {{ paso.piezas[0] }}
+                  </span>
+                  <span class="paso-txt">{{ describirPaso(paso) }}</span>
+                </div>
+                @for (auto of (paso.automaticos ?? []); track $index) {
+                  <div class="paso-auto">
+                    <span class="paso-auto-icono">↳</span>
+                    <span class="paso-chip paso-chip-sm"
+                          [ngStyle]="{ background: colorDe(auto.piezas[0]), color: esClaro(auto.piezas[0]) ? '#111' : '#fff' }">
+                      {{ auto.piezas[0] }}
+                    </span>
+                    <span class="paso-txt paso-txt-auto">{{ describirAutomatico(auto) }}</span>
+                  </div>
+                }
               </li>
             }
           </ol>

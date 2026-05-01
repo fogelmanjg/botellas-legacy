@@ -73,11 +73,18 @@ export const PALETA: Record<string, string> = {
 
 export const LETRAS = Object.keys(PALETA);
 
+export interface PasoAutomatico {
+  tipo: 'extra_a_botella';
+  hasta: number;
+  piezas: string[];
+}
+
 export interface PasoSolucion {
-  tipo: 'botella_a_botella' | 'botella_a_extra' | 'extra_a_botella';
+  tipo: 'botella_a_botella' | 'botella_a_extra';
   desde: number | null;
   hasta: number | null;
   piezas: string[];
+  automaticos: PasoAutomatico[];
 }
 
 export interface Solucion {

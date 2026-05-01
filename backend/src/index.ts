@@ -9,6 +9,7 @@ import juegosRouter from "./routes/juegos";
 import bloqueosRouter from "./routes/bloqueos";
 import nivelesRouter from "./routes/niveles";
 import estrategiasRouter from "./routes/estrategias";
+import dataRouter from "./routes/data";
 
 const app = express();
 app.use(cors({ origin: 'http://localhost:4200' }));
@@ -22,6 +23,7 @@ AppDataSource.initialize()
     app.use("/bloqueos", bloqueosRouter);
     app.use("/niveles", nivelesRouter);
     app.use("/estrategias", estrategiasRouter);
+    app.use("/data", dataRouter);
 
     const port = Number(process.env.PORT || 3000);
     app.listen(port, () => console.log(`Server listening on ${port}`));

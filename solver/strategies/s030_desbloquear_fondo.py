@@ -51,11 +51,6 @@ def detectar(estado: Estado) -> dict | None:
             continue  # todas las piezas son del mismo color: nada que desbloquear
 
         # Hay basura encima del fondo puro → mover tope a extra
-        return {
-            'tipo': 'botella_a_extra',
-            'desde': src.idx,
-            'hasta': None,
-            'piezas': [src.tope()],
-        }
+        return {'tipo': 'botella_a_extra', 'desde': src.idx}
 
     return None

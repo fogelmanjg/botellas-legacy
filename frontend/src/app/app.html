@@ -5,6 +5,9 @@
   <a routerLink="/estrategias" routerLinkActive="active">Estrategias</a>
   <a routerLink="/niveles" routerLinkActive="active">Niveles</a>
   <a routerLink="/editor" routerLinkActive="active">Nuevo nivel</a>
+  <a (click)="exportData()">Exportar</a>
+  <a (click)="fileInput.click()">Importar</a>
+  <input #fileInput type="file" accept="application/json" style="display:none" (change)="onFileChange($event)" />
 </nav>
 <main>
   <router-outlet />

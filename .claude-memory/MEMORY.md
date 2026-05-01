@@ -6,3 +6,4 @@
 - [Mecánicas de bloqueos](project_bloqueos_mecanicas.md) — lona (con/sin color), barrera (grupal temporal), traba (individual permanente); implicancias para el solver
 - [Pendiente: filas del tablero](project_pendiente_filas.md) — botellas organizadas en hasta 4 filas; afecta modelo, editor y lona sin color
 - [Solver](project_solver.md) — arquitectura Rule-Directed Search, estrategias implementadas y pendientes, cómo agregar nuevas
+- [Plan de migración a Linux](project_migration_plan.md) — jgustavo44 migrando a Linux; jg-server (VM VMware) es staging antes del swap de NVMe

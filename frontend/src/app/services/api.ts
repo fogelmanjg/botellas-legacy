@@ -73,4 +73,12 @@ export class ApiService {
   eliminarEstrategia(id: number) {
     return this.http.delete(`${BASE}/estrategias/${id}`);
   }
+
+  // ── Export / Import ─────────────────────────────────────
+  exportData() {
+    return this.http.get(`${BASE}/data/export`);
+  }
+  importData(payload: any) {
+    return this.http.post(`${BASE}/data/import`, payload);
+  }
 }

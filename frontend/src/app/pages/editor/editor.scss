@@ -125,16 +125,56 @@ h2 { font-size: 16px; color: #eee; margin: 0; }
 .solver-pasos {
   list-style: none;
   padding: 0;
-  max-height: 200px;
+  max-height: 260px;
   overflow-y: auto;
   li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     padding: 4px;
-    font-size: 11px;
     border-bottom: 1px solid #2a2a3e;
+    font-size: 11px;
   }
+}
+
+.paso-jugador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.paso-auto {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 20px;
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+.paso-auto-icono {
+  color: #666;
+  font-size: 10px;
+}
+
+.paso-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.paso-chip-sm {
+  width: 14px;
+  height: 14px;
+  font-size: 9px;
+}
+
+.paso-txt-auto {
+  color: #888;
+  font-size: 10px;
 }
 
 // ── Tablero (Contenedores de Grupos) ─────────────────────

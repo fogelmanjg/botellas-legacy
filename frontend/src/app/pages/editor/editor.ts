@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { NgStyle, NgClass } from '@angular/common';
 import { ApiService } from '../../services/api';
 import { BotellaComponent } from '../../components/botella/botella';
-import { Juego, Bloqueo, Nivel, TipoBloqueo, PasoSolucion, PALETA, LETRAS, CLAROS } from '../../models';
+import { Juego, Bloqueo, Nivel, TipoBloqueo, PasoSolucion, PasoAutomatico, PALETA, LETRAS, CLAROS } from '../../models';
+
 
 interface BotellaLocal {
   numerobotella: number;
@@ -118,8 +119,12 @@ export class Editor implements OnInit {
     const n = paso.piezas.length;
     const pieza = n === 1 ? `1× ${color}` : `${n}× ${color}`;
     if (paso.tipo === 'botella_a_botella') return `B${(paso.desde ?? 0) + 1} → B${(paso.hasta ?? 0) + 1}  (${pieza})`;
-    if (paso.tipo === 'botella_a_extra')   return `B${(paso.desde ?? 0) + 1} → Extra  (${pieza})`;
-    return `Extra → B${(paso.hasta ?? 0) + 1}  (${pieza})`;
+    return `B${(paso.desde ?? 0) + 1} → Extra  (${pieza})`;
+  }
+
+  describirAutomatico(auto: PasoAutomatico): string {
+    const color = auto.piezas[0] ?? '?';
+    return `Extra → B${auto.hasta + 1}  (${color})`;
   }
 
   // ── Carga de nivel existente ─────────────────────────────

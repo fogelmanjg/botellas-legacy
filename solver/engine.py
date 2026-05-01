@@ -13,7 +13,7 @@ ciega, acortando dramáticamente el árbol para niveles con patrones frecuentes.
 
 import sys
 from state import Estado
-from rules import movimientos_validos, aplicar_movimiento
+from rules import movimientos_validos, aplicar_movimiento, completar_mov
 from strategies import ESTRATEGIAS
 
 sys.setrecursionlimit(50_000)
@@ -27,7 +27,11 @@ def resolver(estado_inicial: Estado) -> list[dict] | None:
 
 
 def _fingerprint(mov: dict) -> str:
-    return f"{mov['tipo']}|{mov.get('desde')}|{mov.get('hasta')}|{mov['piezas']}"
+    autos = tuple(
+        (a.get("hasta"), tuple(a.get("piezas", [])))
+        for a in mov.get("automaticos", [])
+    )
+    return f"{mov['tipo']}|{mov.get('desde')}|{mov.get('hasta')}|{tuple(mov.get('piezas', []))}|{autos}"
 
 
 def _dfs(estado: Estado, visitados: set[str], camino: list[dict]) -> list[dict] | None:
@@ -41,17 +45,17 @@ def _dfs(estado: Estado, visitados: set[str], camino: list[dict]) -> list[dict] 
 
     # ── Fase 1: movimientos sugeridos por estrategias ────────────
     for _peso, _nombre, detectar in ESTRATEGIAS:
-        mov = detectar(estado)
-        if mov is None:
+        hint = detectar(estado)
+        if hint is None:
             continue
-        fp = _fingerprint(mov)
-        if fp in intentados:
-            continue
-        intentados.add(fp)
-
-        resultado = _intentar(mov, estado, visitados, camino)
-        if resultado is not None:
-            return resultado
+        for mov in completar_mov(estado, hint):
+            fp = _fingerprint(mov)
+            if fp in intentados:
+                continue
+            intentados.add(fp)
+            resultado = _intentar(mov, estado, visitados, camino)
+            if resultado is not None:
+                return resultado
 
     # ── Fase 2: fallback — todos los movimientos válidos ─────────
     for mov in movimientos_validos(estado):
@@ -59,7 +63,6 @@ def _dfs(estado: Estado, visitados: set[str], camino: list[dict]) -> list[dict] 
         if fp in intentados:
             continue
         intentados.add(fp)
-
         resultado = _intentar(mov, estado, visitados, camino)
         if resultado is not None:
             return resultado
